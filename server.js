@@ -15,12 +15,16 @@ function askEmployees() {
         message:"What role would you like to add?",
     }, 
     {
-        type:"input",
+        type:"list",
         name: "employees",
         message:"Would you like to add an employee?",
+        choices: [
+            "Yes",
+            "No"
+        ]
     },
     {
-        type:"choices",
+        type:"list",
         name: "view",
         message:"What would you like to see?",
         choices: [
@@ -36,3 +40,5 @@ function askEmployees() {
     },
     ])
 };
+
+askEmployees()
