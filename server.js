@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 //const console = require("console.table");
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -18,6 +19,7 @@ var connection = mysql.createConnection({
     console.log("connected as id " + connection.threadId);
   });
 
+//first inquirer prompt
 inquirer.prompt([
     {
         type:"list",
@@ -109,5 +111,5 @@ function updateEmployees() {
 
 }
 function updateRoles() {
-    
+
 }
