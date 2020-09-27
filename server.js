@@ -40,6 +40,27 @@ inquirer.prompt([
             case "Add a Department": 
                addDepartment() 
                break;
+            case "Add a Role":
+                addRole()
+                break;
+            case "Add an Employee":
+                addEmployee()
+                break;
+            case "View Department":
+                viewDepartment()
+                break;
+            case "View Roles":
+                viewRoles()
+                break;
+            case "View Employees":
+                viewEmployees()
+                break;
+            case "Update Employees":
+                updateEmployees()
+                break;
+            case "Update Roles":
+                updateRoles()
+                break;
         }
     });
 function addDepartment() {
@@ -49,37 +70,44 @@ function addDepartment() {
             name: "add department",
             message:"What department would you like to add?",
         }
-    ]).then(function(answers){
-        
+    ]).then(function(answers){  
+
     })
 }
-    // {
-    //     type:"input",
-    //     name: "roles",
-    //     message:"What role would you like to add?",
-    // }, 
-    // {
-    //     type:"list",
-    //     name: "employees",
-    //     message:"Would you like to add an employee?",
-    //     choices: [
-    //         "Yes",
-    //         "No"
-    //     ]
-    // },
-    // {
-    //     type:"list",
-    //     name: "view",
-    //     message:"What would you like to see?",
-    //     choices: [
-    //         "Departments",
-    //         "Roles",
-    //         "Employees"
-    //     ]
-    // },
-    // {
-    //     type:"input",
-    //     name: "update",
-    //     message:"What would you like to update?",
-    // },
-    // ]);
+function addRole() {
+    inquirer.prompt([
+        {
+            type:"input",
+            name: "add role",
+            message:"What role would you like to add?",
+        }
+    ]).then(function(answers){  
+           
+    })
+}
+function addEmployee() {
+    inquirer.prompt([
+        {
+            type:"input",
+            name: "add employee",
+            message:"What employee would you like to add?",
+        }
+    ]).then(function(answers){  
+           
+    })
+}
+function viewDepartment() {
+    //how to VIEW data
+}
+function viewRoles() {
+    //how to VIEW data
+} 
+function viewEmployees() {
+    //how to VIEW data
+}
+function updateEmployees() {
+
+}
+function updateRoles() {
+    
+}
