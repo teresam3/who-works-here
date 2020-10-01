@@ -129,28 +129,27 @@ async function addEmployee() {
         });
     })
 };
-function viewDepartment() {
-    connection.query("SELECT * FROM departments", function(err, result) {
-        if (err) throw err;
-    const viewDep = query("SELECT * FROM departments")
-    console.table(viewDep)
+async function viewDepartment() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const departments = await query("SELECT * FROM departments")
     console.log("Here are the departments!");
-    });
-};
-function viewRoles() {
-    connection.query("SELECT * FROM roles", function(err, result) {
-        if (err) throw err;
-    console.table(roles)
+    console.table(departments);
+}
+
+async function viewRoles() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const roles = await query("SELECT * FROM roles")
     console.log("Here are the roles!");
-    });
-};
-function viewEmployees() {
-    connection.query("SELECT * FROM employees", function(err, result) {
-        if (err) throw err;
-    console.table(employees)
-    console.log("Here are the employees!");
-    });
-};
+    console.table(roles);
+}
+
+async function viewEmployees() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const employees = await query("SELECT * FROM employees")
+    console.log("Here are the employeees!");
+    console.table(employees);
+}
+
 function updateEmployees() {
 //     UPDATE table_name 
 // SET 
