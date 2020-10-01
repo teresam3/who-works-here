@@ -78,8 +78,8 @@ function addDepartment() {
         connection.query("INSERT INTO departments", function(err, result) {
                 if (err) throw err;
         console.log("added a department!")
+        });
     });
-});
 }
 function addRole() {
     inquirer.prompt([
@@ -89,9 +89,12 @@ function addRole() {
             message:"What role would you like to add?",
         }
     ]).then(function(answers){  
-           
+        connection.query("INSERT INTO roles", function(err, result) {
+            if (err) throw err;
+        console.log("added a role!")
+        });   
     })
-}
+};
 async function addEmployee() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
     const roles = await query("SELECT * FROM roles")
@@ -123,21 +126,29 @@ async function addEmployee() {
             [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.managerId], 
             function(err, result) {
                 if (err) throw err;
-
         });
     })
-}
+};
 function viewDepartment() {
-    //how to VIEW data
-}
+    connection.query("SELECT * FROM departments", function(err, result) {
+        if (err) throw err;
+    console.log("Here are the departments!");
+    });
+};
 function viewRoles() {
-    //how to VIEW data
-} 
+    connection.query("SELECT * FROM roles", function(err, result) {
+        if (err) throw err;
+    console.log("Here are the roles!");
+    });
+};
 function viewEmployees() {
-    //how to VIEW data
-}
+    connection.query("SELECT * FROM employees", function(err, result) {
+        if (err) throw err;
+    console.log("Here are the employees!");
+    });
+};
 function updateEmployees() {
-//     UPDATE [LOW_PRIORITY] [IGNORE] table_name 
+//     UPDATE table_name 
 // SET 
 //     column_name1 = expr1,
 //     column_name2 = expr2,
