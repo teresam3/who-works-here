@@ -174,9 +174,6 @@ async function viewEmployees() {
 };
 
 function updateEmployees() {
-    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
-    const roles = query("SELECT * FROM roles")
-    console.table(roles)
     inquirer.prompt([
         {
             type:"input",
@@ -189,16 +186,21 @@ function updateEmployees() {
             message:"What is the last name of the employee?",
         },
         {
-            type:"list",
+            type:"input",
             name: "updateEmployeeRole",
             message:"What is the role of the employee?",
-            choices: roles.map((role) => {return role.title})
         },
         {
             type:"input",
             name: "updateManagerId",
             message:"Who is the manager of the employee?"
-        }
+        }]).then(function(answers){  
+            connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+                [answers.updateFirstName, answers.updateLastName, answers.updateEmployeeRole, answers.updateManagerId], 
+                function(err, result) {
+                    if (err) throw err;
+                console.log("updated an employee!")
+            });
 //     UPDATE table_name 
 // SET 
 //     column_name1 = expr1,
@@ -206,7 +208,7 @@ function updateEmployees() {
 //     ...
 // [WHERE
 //     condition];
-};
+}),
 
 function updateRoles() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
