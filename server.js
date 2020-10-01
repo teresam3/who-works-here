@@ -83,7 +83,7 @@ function addDepartment() {
         console.log("added a department!")
         });
     });
-}
+};
 function addRole() {
     inquirer.prompt([
         {
@@ -92,11 +92,13 @@ function addRole() {
             message:"What role would you like to add?",
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO roles (title) VALUES (?)", function(err, result) {
+        connection.query("INSERT INTO roles (title) VALUES (?)",
+        [answers.title], 
+        function(err, result) {
             if (err) throw err;
-        console.log("added a role!")
-        });   
-    })
+        console.log("added a role!");   
+    });
+});
 };
 async function addEmployee() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
