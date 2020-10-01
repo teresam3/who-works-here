@@ -185,18 +185,18 @@ function updateEmployees() {
         },
         {
             type:"input",
-            name: "employeeLastName",
+            name: "updateLastName",
             message:"What is the last name of the employee?",
         },
         {
             type:"list",
-            name: "employeeRole",
+            name: "updateEmployeeRole",
             message:"What is the role of the employee?",
             choices: roles.map((role) => {return role.title})
         },
         {
             type:"input",
-            name: "managerId",
+            name: "updateManagerId",
             message:"Who is the manager of the employee?"
         }
 //     UPDATE table_name 
