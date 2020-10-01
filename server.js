@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-//const console = require("console.table");
+const consoleTable = require("console.table");
 const util = require('util');
 const { waitForDebugger } = require("inspector");
 
@@ -132,18 +132,22 @@ async function addEmployee() {
 function viewDepartment() {
     connection.query("SELECT * FROM departments", function(err, result) {
         if (err) throw err;
+    const viewDep = query("SELECT * FROM departments")
+    console.table(viewDep)
     console.log("Here are the departments!");
     });
 };
 function viewRoles() {
     connection.query("SELECT * FROM roles", function(err, result) {
         if (err) throw err;
+    console.table(roles)
     console.log("Here are the roles!");
     });
 };
 function viewEmployees() {
     connection.query("SELECT * FROM employees", function(err, result) {
         if (err) throw err;
+    console.table(employees)
     console.log("Here are the employees!");
     });
 };
