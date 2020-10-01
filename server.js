@@ -82,7 +82,7 @@ function addDepartment() {
         [answers.addDepartment], 
         function(err, result) {
             if (err) throw err;
-        console.log("added a role!");   
+        console.log("added a department!");   
         });
     });
 };
@@ -107,7 +107,7 @@ async function addRole() {
             choices: departments.map((department) => {return department.name})
         }
     ]).then(function(answers){ 
-        connection.query("SELECT name FROM department WHERE ")
+        connection.query("SELECT name FROM department WHERE" department.name === answers.addDepId)
         connection.query("INSERT INTO roles (title, salary, department_id) VALUES (?, ?)",
         [answers.addRole, answers.addSalary, answers.addDepId], 
         function(err, result) {
@@ -147,31 +147,58 @@ async function addEmployee() {
             [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.managerId], 
             function(err, result) {
                 if (err) throw err;
+            console.log("added an employee!")
         });
     })
 };
+
 async function viewDepartment() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
     const departments = await query("SELECT * FROM departments")
     console.log("Here are the departments!");
     console.table(departments);
-}
+};
 
 async function viewRoles() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
     const roles = await query("SELECT * FROM roles")
     console.log("Here are the roles!");
     console.table(roles);
-}
+};
 
 async function viewEmployees() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
     const employees = await query("SELECT * FROM employees")
     console.log("Here are the employeees!");
     console.table(employees);
-}
+};
 
 function updateEmployees() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const roles = query("SELECT * FROM roles")
+    console.table(roles)
+    inquirer.prompt([
+        {
+            type:"input",
+            name: "updateFirstName",
+            message:"What is the first name of the employee?",
+        },
+        {
+            type:"input",
+            name: "employeeLastName",
+            message:"What is the last name of the employee?",
+        },
+        {
+            type:"list",
+            name: "employeeRole",
+            message:"What is the role of the employee?",
+            choices: roles.map((role) => {return role.title})
+        },
+        {
+            type:"input",
+            name: "managerId",
+            message:"Who is the manager of the employee?"
+        }
 //     UPDATE table_name 
 // SET 
 //     column_name1 = expr1,
@@ -179,7 +206,9 @@ function updateEmployees() {
 //     ...
 // [WHERE
 //     condition];
-}
-function updateRoles() {
+};
 
-}
+function updateRoles() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const roles = query("UPDATE roles SET ") 
+};
