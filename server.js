@@ -1,6 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 //const console = require("console.table");
+const util = require('util');
+const { waitForDebugger } = require("inspector");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -73,8 +75,11 @@ function addDepartment() {
             message:"What department would you like to add?",
         }
     ]).then(function(answers){  
-
-    })
+        connection.query("INSERT INTO departments", function(err, result) {
+                if (err) throw err;
+        console.log("added a department!")
+    });
+});
 }
 function addRole() {
     inquirer.prompt([
@@ -87,15 +92,39 @@ function addRole() {
            
     })
 }
-function addEmployee() {
+async function addEmployee() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const roles = await query("SELECT * FROM roles")
+    console.table(roles)
     inquirer.prompt([
         {
             type:"input",
-            name: "add employee",
-            message:"What employee would you like to add?",
+            name: "employeeFirstName",
+            message:"What is the first name of the employee?",
+        },
+        {
+            type:"input",
+            name: "employeeLastName",
+            message:"What is the last name of the employee?",
+        },
+        {
+            type:"list",
+            name: "employeeRole",
+            message:"What is the role of the employee?",
+            choices: roles.map((role) => {return role.title})
+        },
+        {
+            type:"input",
+            name: "managerId",
+            message:"Who is the manager of the employee?"
         }
     ]).then(function(answers){  
-           
+        connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
+            [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.managerId], 
+            function(err, result) {
+                if (err) throw err;
+
+        });
     })
 }
 function viewDepartment() {
@@ -108,7 +137,13 @@ function viewEmployees() {
     //how to VIEW data
 }
 function updateEmployees() {
-
+//     UPDATE [LOW_PRIORITY] [IGNORE] table_name 
+// SET 
+//     column_name1 = expr1,
+//     column_name2 = expr2,
+//     ...
+// [WHERE
+//     condition];
 }
 function updateRoles() {
 
