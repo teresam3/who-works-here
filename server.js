@@ -106,7 +106,8 @@ async function addRole() {
             message:"What is their Department?",
             choices: departments.map((department) => {return department.name})
         }
-    ]).then(function(answers){  
+    ]).then(function(answers){ 
+        connection.query("SELECT name FROM department WHERE ")
         connection.query("INSERT INTO roles (title, salary, department_id) VALUES (?, ?)",
         [answers.addRole, answers.addSalary, answers.addDepId], 
         function(err, result) {
