@@ -1,9 +1,11 @@
+//dependecies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
 const util = require('util');
 const { waitForDebugger } = require("inspector");
 
+//established credentials to database
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -12,7 +14,7 @@ var connection = mysql.createConnection({
     database: "employee_db"
   });
   
-  // Initiate MySQL Connection.
+// Initiate MySQL Connection.
   connection.connect(function(err) {
     if (err) {
       console.error("error connecting: " + err.stack);
@@ -21,7 +23,7 @@ var connection = mysql.createConnection({
     console.log("connected as id " + connection.threadId);
   });
 
-//first inquirer prompt
+//initial inquirer prompt
 inquirer.prompt([
     {
         type:"list",
@@ -38,6 +40,7 @@ inquirer.prompt([
             "Update Roles"
         ]
     }
+//switch statement that will lead into the next action
 ]).then(function(answers){
         console.log(answers)
         switch (answers.userChoice) {
@@ -75,7 +78,7 @@ function addDepartment() {
             message:"What department would you like to add?",
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO departments", function(err, result) {
+        connection.query("INSERT INTO departments (name) VALUES (?)", function(err, result) {
                 if (err) throw err;
         console.log("added a department!")
         });
@@ -89,7 +92,7 @@ function addRole() {
             message:"What role would you like to add?",
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO roles", function(err, result) {
+        connection.query("INSERT INTO roles (title) VALUES (?)", function(err, result) {
             if (err) throw err;
         console.log("added a role!")
         });   
@@ -122,7 +125,7 @@ async function addEmployee() {
             message:"Who is the manager of the employee?"
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
+        connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
             [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.managerId], 
             function(err, result) {
                 if (err) throw err;
