@@ -74,26 +74,41 @@ function addDepartment() {
     inquirer.prompt([
         {
             type:"input",
-            name: "add department",
+            name: "addDepartment",
             message:"What department would you like to add?",
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO departments (name) VALUES (?)", function(err, result) {
-                if (err) throw err;
-        console.log("added a department!")
+        connection.query("INSERT INTO departments (title) VALUES (?)",
+        [answers.addDepartment], 
+        function(err, result) {
+            if (err) throw err;
+        console.log("added a role!");   
         });
     });
 };
-function addRole() {
+async function addRole() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const departments = await query("SELECT * FROM departments")
     inquirer.prompt([
         {
             type:"input",
-            name: "add role",
+            name: "addRole",
             message:"What role would you like to add?",
+        },
+        {
+            type:"input",
+            name: "addSalary",
+            message:"What is their salary?",
+        },
+        {
+            type:"list",
+            name: "addDepId",
+            message:"What is their Department?",
+            choices: departments.map((department) => {return department.name})
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO roles (title) VALUES (?)",
-        [answers.title], 
+        connection.query("INSERT INTO roles (title, salary, department_id) VALUES (?, ?)",
+        [answers.addRole, answers.addSalary, answers.addDepId], 
         function(err, result) {
             if (err) throw err;
         console.log("added a role!");   
