@@ -26,9 +26,3 @@ CREATE TABLE employees (
     FOREIGN KEY(role_id) REFERENCES roles(id),
     FOREIGN KEY(manager_id) REFERENCES employees(id)
 );
-
-INSERT INTO departments (name)
-    VALUES ("hr"), ("engineering"), ("finance");
-
-INSERT INTO roles (title, salary, department_id)
-    VALUES ("HR Manager", 70000, 1), ("software developer", 80000, 2), ("accountant", 90000, 3);

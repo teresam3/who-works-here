@@ -104,15 +104,20 @@ async function addRole() {
             type:"list",
             name: "addDepId",
             message:"What is their Department?",
-            choices: departments.map((department) => {return department.name})
+            choices: departments.map((department) => {return department.name}),
         }
-    ]).then(function(answers){ 
-        connection.query("SELECT name FROM department WHERE" department.name === answers.addDepId)
-        connection.query("INSERT INTO roles (title, salary, department_id) VALUES (?, ?)",
-        [answers.addRole, answers.addSalary, answers.addDepId], 
+    ]).then(function(answers){
+        console.log("Department array", departments)
+        const depId = departments.find((department)=> {
+            console.log("Each department", department.name)
+            return department.name === answers.addDepId
+        }).id
+        console.log("Found department", depId)
+        connection.query("INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)",
+        [answers.addRole, answers.addSalary, depId], 
         function(err, result) {
             if (err) throw err;
-        console.log("added a role!");   
+        console.log("added a role!"); 
     });
 });
 };
@@ -173,7 +178,11 @@ async function viewEmployees() {
     console.table(employees);
 };
 
-function updateEmployees() {
+async function updateEmployees() {
+    const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
+    const roles = await query("SELECT * FROM roles");
+    const employees = await query("SELECT * FROM employees")
+    console.log(employees)
     inquirer.prompt([
         {
             type:"input",
@@ -186,15 +195,18 @@ function updateEmployees() {
             message:"What is the last name of the employee?",
         },
         {
-            type:"input",
+            type:"list",
             name: "updateEmployeeRole",
             message:"What is the role of the employee?",
+            choices: roles.map((role) => {return role.title})
         },
         {
-            type:"input",
+            type:"list",
             name: "updateManagerId",
-            message:"Who is the manager of the employee?"
-        }]).then(function(answers){  
+            message:"Who is the manager of the employee?",
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`)
+        },
+    ]).then(function(answers){  
             connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
                 [answers.updateFirstName, answers.updateLastName, answers.updateEmployeeRole, answers.updateManagerId], 
                 function(err, result) {
@@ -208,7 +220,8 @@ function updateEmployees() {
 //     ...
 // [WHERE
 //     condition];
-}),
+})
+};
 
 function updateRoles() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
