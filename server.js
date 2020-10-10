@@ -78,7 +78,7 @@ function addDepartment() {
             message:"What department would you like to add?",
         }
     ]).then(function(answers){  
-        connection.query("INSERT INTO departments (title) VALUES (?)",
+        connection.query("INSERT INTO departments (name) VALUES (?)",
         [answers.addDepartment], 
         function(err, result) {
             if (err) throw err;
@@ -142,14 +142,9 @@ async function addEmployee() {
             message:"What is the role of the employee?",
             choices: roles.map((role) => {return role.title})
         },
-        {
-            type:"input",
-            name: "managerId",
-            message:"Who is the manager of the employee?"
-        }
     ]).then(function(answers){  
-        connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
-            [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.managerId], 
+        connection.query("INSERT INTO employees (first_name, last_name, ) VALUES (?, ?, ?)",
+            [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole], 
             function(err, result) {
                 if (err) throw err;
             console.log("added an employee!")
@@ -185,19 +180,25 @@ async function updateEmployees() {
     console.log(employees)
     inquirer.prompt([
         {
+            type:"list",
+            name: "whichEmployee",
+            message:"Which employee did you want to update?",
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`),
+        },
+        {
             type:"input",
             name: "updateFirstName",
-            message:"What is the first name of the employee?",
+            message:"What is the NEW first name of the employee?",
         },
         {
             type:"input",
             name: "updateLastName",
-            message:"What is the last name of the employee?",
+            message:"What is the NEW last name of the employee?",
         },
         {
             type:"list",
             name: "updateEmployeeRole",
-            message:"What is the role of the employee?",
+            message:"What is the NEW role of the employee?",
             choices: roles.map((role) => {return role.title})
         },
         {
@@ -213,17 +214,29 @@ async function updateEmployees() {
                     if (err) throw err;
                 console.log("updated an employee!")
             });
-//     UPDATE table_name 
-// SET 
-//     column_name1 = expr1,
-//     column_name2 = expr2,
-//     ...
-// [WHERE
-//     condition];
-})
+        });
 };
-
-function updateRoles() {
+async function updateRoles() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
-    const roles = query("UPDATE roles SET ") 
-};
+    const roles = await query("SELECT * FROM roles");
+    inquirer.prompt([
+        {
+            type:"list",
+            name: "whichEmployee",
+            message:"Which employee did you want to update?",
+            choices: roles.map((role) => `${role.title}`),
+        },
+        {
+            type:"input",
+            name: "updateRole",
+            message:"What is the NEW role?",
+        },
+    ]).then(function(answers){  
+        connection.query("INSERT INTO roles (title) VALUES ?",
+            [answers.updateRole], 
+            function(err, result) {
+                if (err) throw err;
+            console.log("updated roles!")
+        });
+    });
+}
