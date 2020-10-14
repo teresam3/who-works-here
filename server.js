@@ -4,6 +4,7 @@ const inquirer = require("inquirer");
 const consoleTable = require("console.table");
 const util = require('util');
 const { waitForDebugger } = require("inspector");
+const { totalmem } = require("os");
 
 //established credentials to database
 var connection = mysql.createConnection({
@@ -123,8 +124,10 @@ async function addRole() {
 };
 async function addEmployee() {
     const query = (sql, args) => util.promisify(connection.query).call(connection, sql, args);
-    const roles = await query("SELECT * FROM roles")
-    console.table(roles)
+    const roles = await query("SELECT * FROM roles");
+    const employees = await query("SELECT * FROM employees")
+    const departments = await query("SELECT * FROM departments")
+    //console.log("This is roles:",roles)
     inquirer.prompt([
         {
             type:"input",
@@ -142,9 +145,29 @@ async function addEmployee() {
             message:"What is the role of the employee?",
             choices: roles.map((role) => {return role.title})
         },
-    ]).then(function(answers){  
-        connection.query("INSERT INTO employees (first_name, last_name, ) VALUES (?, ?, ?)",
-            [answers.employeeFirstName, answers.employeeLastName, answers.employeeRole], 
+        {
+            type:"list",
+            name: "employeeManager",
+            message:"Who is the manager?",
+            choices: (priorAnswers) => {
+                const filteredRoleDepId = roles.find((role) => priorAnswers.employeeRole === role.title).department_id;
+                console.log(filteredRoleDepId)
+                const filteredRoles = roles.filter((role) => role.department_id === filteredRoleDepId).map((filteredRole) => {
+                    return filteredRole.id
+                })
+                console.log(filteredRoles)
+                const filteredEmployees = employees.filter((filteredEmployee) => filteredRoles.includes(filteredEmployee.role_id))
+                    console.log(filteredEmployees)
+                    return filteredEmployees.map((employee) =>`${employee.first_name} ${employee.last_name}`)
+            },
+        },
+    ]).then(function(answers) {
+        const filteredRole = roles.find((role) => answers.employeeRole === role.title)
+        //console.log("Filtered role:", filteredRole);
+        const filteredManager = employees.find((employee) => answers.employeeManager === `${employee.first_name} ${employee.last_name}`)
+        //console.log("Filtered manager:", filteredManager.id)
+        connection.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+            [answers.employeeFirstName, answers.employeeLastName, filteredRole.id, filteredManager.id], 
             function(err, result) {
                 if (err) throw err;
             console.log("added an employee!")
