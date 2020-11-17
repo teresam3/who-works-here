@@ -1,4 +1,4 @@
-# Unit 12 MySQL Homework: Employee Tracker
+# Employee Tracker
 
 # who-works-here
 
